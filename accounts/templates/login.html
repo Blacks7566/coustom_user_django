@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+</head>
+
+<body>
+
+    {% if messages %} {% for msg in messages %}
+    <small {% if msg.tags %} class="{{msg.tags}}" {% endif %}>{{msg}}</small> {% endfor %} {% endif %}
+    <div class="containerS">
+        <h2 class="hea">Registration</h2><br>
+
+        <form action="" method="post" novalidate>
+            {% csrf_token %} {% comment %} {% if form.non_field_errors %} {% for error in form.non_field_errors %}
+            <small class="text-danger">{{error}}</small> {% endfor %} {% endif %} {% endcomment %} {% for fm in form %} {{fm.label_tag}} {{fm}} {% if fm.errors %}<br>
+            <small class="text-danger">{{fm.errors|striptags}}</small>{% endif %} <br> {% endfor %}
+            <div class='lgS'>
+                <input type='submit' value='Singup' class='btn btn-primary'> {% comment %} <a href="{% url 'login' %}">login</a> {% endcomment %}
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
