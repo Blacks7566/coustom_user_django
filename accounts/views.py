@@ -1,11 +1,26 @@
 from django.shortcuts import render, HttpResponseRedirect,HttpResponse,redirect
 from accounts.forms import UserForm, UserEditForm,LoginForm
 from django.contrib import messages
+from django.contrib.auth.models import make_password
 from accounts.validation import cheak_email, cheak_mobile
 from accounts.models import User
 from django.contrib.auth import login, logout, authenticate,update_session_auth_hash
 from django.contrib.auth.forms import AuthenticationForm,PasswordChangeForm,SetPasswordForm,UserCreationForm
 # Create your views here.
+
+
+
+
+
+
+
+
+
+        # user =form.save(commit=False)
+        # user.password = make_password(form.data.get('password'))
+        # user.save()
+        # messages.add_message(request, messages.INFO, 'Register Succesfully!')
+
 
 
 def index(request):
@@ -23,7 +38,9 @@ def index(request):
                             if phone.isdigit():
                                 if cheak_mobile(phone):
                                     if cheak_email(email):
-                                        fm.save()
+                                        user = fm.save(commit=False)
+                                        user.password = make_password(fm.data.get('password'))
+                                        user.save()
                                         messages.success(
                                             request, 'Register successfully ...')
                                     else:
@@ -80,6 +97,7 @@ def index(request):
 def login_view(request):
     # if request.user.is_authenticated:
         # return redirect('index')
+    
     context ={}
     form=LoginForm(request.POST or None)
     if form.is_valid():
@@ -89,7 +107,8 @@ def login_view(request):
         if not matching:
             messages.error(request, 'Email id Not Match in DB Please Signup First!.')
         else:
-            user=authenticate(email=email,password=password)
+            user=authenticate(username=email,password=password)
+            print(user)
             if user:
                 login(request,user)
                 return redirect('profile')

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> {% load socialaccount %}
 <html lang="en">
 
 <head>
@@ -20,7 +20,10 @@
             <small class="text-danger">{{error}}</small> {% endfor %} {% endif %} {% endcomment %} {% for fm in form %} {{fm.label_tag}} {{fm}} {% if fm.errors %}<br>
             <small class="text-danger">{{fm.errors|striptags}}</small>{% endif %} <br> {% endfor %}
             <div class='lgS'>
-                <input type='submit' value='Singup' class='btn btn-primary'> {% comment %} <a href="{% url 'login' %}">login</a> {% endcomment %}
+                <input type='submit' value='Singup' class='btn btn-primary'>
+                <button>
+                    <a href="{% provider_login_url 'google'%}?next=/">Login with google</a>
+                </button> {% comment %} <a href="{% url 'login' %}">login</a> {% endcomment %}
             </div>
         </form>
     </div>

@@ -11,7 +11,7 @@ class User_manager(BaseUserManager):
 
         user = self.model(email=email,phone=phone,name=name,gender=gender,**extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
 
     def create_superuser(self,email,password,phone,name,gender,**extra_fields):
