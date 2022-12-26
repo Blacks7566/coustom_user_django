@@ -95,27 +95,27 @@ def index(request):
 
 
 def login_view(request):
-    # if request.user.is_authenticated:
-        # return redirect('index')
+    if not request.user.is_authenticated:
     
-    context ={}
-    form=LoginForm(request.POST or None)
-    if form.is_valid():
-        email =form.data.get('email')
-        password=form.data.get('password')
-        matching =User.objects.filter(email=email)
-        if not matching:
-            messages.error(request, 'Email id Not Match in DB Please Signup First!.')
-        else:
-            user=authenticate(username=email,password=password)
-            print(user)
-            if user:
-                login(request,user)
-                return redirect('profile')
+        context ={}
+        form=LoginForm(request.POST or None)
+        if form.is_valid():
+            email =form.data.get('email')
+            password=form.data.get('password')
+            matching =User.objects.filter(email=email)
+            if not matching:
+                messages.error(request, 'Email id Not Match in DB Please Signup First!.')
             else:
-                messages.error(request, 'Email and Password incorrect.')
-    context['form']=form
-    return render(request,"login.html",context)
+                user=authenticate(email=email,password=password)
+                if user:
+                    login(request,user)
+                    messages.success(request,"login successfully..")
+                    return redirect('profile')
+                else:
+                    messages.error(request, 'Email and Password incorrect.')
+        context['form']=form
+        return render(request,"login.html",context)
+    return HttpResponseRedirect('/profile/')
 
 
 
@@ -126,30 +126,6 @@ def login_view(request):
 
 
 
-# def login_view(request):
-
-#     if not request.user.is_authenticated:
-
-#         if request.method == 'POST':
-#             fm = AuthenticationForm(request=request, data=request.POST)
-#             if fm.is_valid():
-#                 uname = fm.cleaned_data['username']
-#                 upass = fm.cleaned_data['password']
-
-#                 print(uname)
-#                 print(upass)
-#                 user = authenticate(request, username=uname, password=upass)
-#                 print(user)
-#                 if user is not None:
-#                     login(request, user)
-#                     messages.success(request,'Log in successfully')
-#                     return HttpResponseRedirect('/profile/')
-
-#         else:
-#             fm = AuthenticationForm()
-#         return render(request, 'login.html', {'form': fm})
-#     else:
-#         return HttpResponseRedirect('/profile/')
 
 
 def logout_view(request):
@@ -197,8 +173,9 @@ def pasword_change(request):
                 update_session_auth_hash(request,fm.user)
                 return HttpResponseRedirect('/profile/')
             else:
-                fm = PasswordChangeForm(user = request.user)
-            return render(request,'changePassword.html',{'form':fm})
+                messages.error(request,"Bhoth password should be same..")      
+        fm = PasswordChangeForm(user = request.user)
+        return render(request,'changePassword.html',{'form':fm})        
     else:
         return HttpResponseRedirect('/login/')
 
@@ -212,7 +189,8 @@ def set_password(request):
                 update_session_auth_hash(request,fm.user)
                 return HttpResponseRedirect('/profile/')
             else:
-                fm = SetPasswordForm(user = request.user)
-            return render(request,'setPassword.html',{'form':fm})
+                messages.error(request,"Bhoth password should be same..")      
+        fm = SetPasswordForm(user = request.user)
+        return render(request,'setPassword.html',{'form':fm})        
     else:
         return HttpResponseRedirect('/login/')
